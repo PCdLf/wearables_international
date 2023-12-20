@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "wearables_python"
+version = "0.1.0"
+description = "Pre-process, artifact detection, and feature eaxtraction for Empatica EmbracePlus https://www.empatica.com/embraceplus/ and Nowatch https://nowatch.com/"
+authors = ["Peter de Looff and Selin Acan"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
