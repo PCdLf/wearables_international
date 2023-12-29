@@ -15,15 +15,19 @@ def get_timestamp_column(start_time,sampling_freq,len_list):
     and stops when it reaches the length len_list.
     -Returns the created dataframe.
     """
-    start_timestamp = pd.to_datetime(start_time, unit='ns')
-    end_timestamp = start_timestamp + pd.DateOffset(seconds=(len_list) / sampling_freq)
+    start_time_ns = start_time * 1000
+    start_timestamp = pd.to_datetime(start_time_ns, unit='ns')
 
+    # Calculate end_timestamp based on the length of the list and sampling frequency
+    end_timestamp = start_timestamp + pd.to_timedelta(len_list / sampling_freq, unit='s')
+
+    # Generate a range of timestamps from start to end with the given frequency
     timestamp_column = pd.date_range(start=start_timestamp, end=end_timestamp, freq=pd.to_timedelta(1 / sampling_freq, unit='s'))
     timestamp_df = pd.DataFrame({'timestamp': timestamp_column})
-    # Convert 'timestamp' column back to Unix timestamp (seconds since epoch)
     
-    timestamp_df['unix_timestamp'] = timestamp_df['timestamp'].apply(lambda x: x.timestamp()).astype(float)  # Convert to Unix timestamp
-    
+    # Convert 'timestamp' column back to Unix timestamp in seconds
+    timestamp_df['unix_timestamp'] = timestamp_df['timestamp'].astype('int64') // 10**9
+
     return timestamp_df
 
 def get_avro_content(zip_file_path,avro_file_path_within_zip):
