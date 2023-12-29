@@ -45,7 +45,7 @@ def get_avro_content(zip_file_path,avro_file_path_within_zip):
     - Returns the final dictionary.  
     
     """
-    # Extract the contents of the zip file
+        # Extract the contents of the zip file
     extracted_folder = r'C:\Users\acans\Desktop\extracted_data'
     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
         zip_ref.extractall(extracted_folder)
@@ -192,41 +192,21 @@ def read_e4_plus(root):
                                 -3.avro            
     After calling other helper functions, it will return the desired avro content.
     """
-    avro_content={}
-
-    zip_files=os.listdir(root)
-    zip_files = [(root+'\\') + s for s in zip_files]
-
-    directory_structure={}
-    for zip_file in zip_files:
-        with ZipFile(zip_file, 'r') as zip_ref: 
-            file_names = zip_ref.namelist()
-            avro_file_names = [file_name for file_name in file_names if file_name.lower().endswith(".avro")]
-            directory_structure[zip_file]=avro_file_names
+    avro_content=[]   
+    zf = ZipFile(root)
+    file_names = zf.namelist()
     
-    for key,value in directory_structure.items():
-        for avro in value:
-            match = re.search(r'(\d{4}-\d{2}-\d{2})', key)
-
-            # Check if a match is found
-            if match:
-                date_info = str(match.group(1))
-
-                print(f"Extracted date information: {date_info}")
-            else:
-                print("No date information found in the string.")
-                
-                
-            if date_info in avro_content.keys():
-                avro_content[date_info]+=get_avro_content(key,avro)
-            else:
-                avro_content[date_info]=get_avro_content(key,avro)
+    avro_file_names = [file_name for file_name in file_names if file_name.lower().endswith(".avro")]
+    
+    for file in avro_file_names:    
+        avro_content+=get_avro_content(root,file)
+            
     return avro_content
 
 """
 EXAMPLE USAGE BELOW
 """
 print('Python Script Loaded Successfully')
-root=r'C:\\Users\\acans\\Desktop\\Embrace Plus Example Data'
+root=r'C:\\Users\\acans\\Desktop\\2023-07-11.zip'
 avro_files=read_e4_plus(root)
 
